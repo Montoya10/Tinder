@@ -1,0 +1,65 @@
+{
+  "HOME": {
+    "TITLE": "Wallpapers App",
+    "LANGUAGE": "Language",
+    "GALLERY_TITLE": "Wallpapers Gallery",
+    "DESCRIPTION": "Choose your favorite wallpapers",
+    "IMAGES_UPLOADED": "image(s) uploaded"
+  },
+  "LOGIN": {
+    "TITLE": "Login",
+    "EMAIL": "Email",
+    "PASSWORD": "Password",
+    "LOGIN_BUTTON": "Login",
+    "GOOGLE_LOGIN": "Login with Google",
+    "NO_ACCOUNT": "Don't have an account?",
+    "REGISTER_HERE": "Go to register",
+    "WELCOME": "Welcome back!",
+    "SUCCESS": "Welcome! Login successful"
+  },
+  "REGISTER": {
+    "TITLE": "Create Account",
+    "NAME": "Name",
+    "LAST_NAME": "Last Name",
+    "EMAIL": "Email",
+    "PASSWORD": "Password",
+    "LANGUAGE": "Language",
+    "REGISTER_BUTTON": "Register",
+    "HAVE_ACCOUNT": "Already have an account?",
+    "LOGIN_HERE": "Go to login",
+    "SUCCESS": "Account created! You can now login"
+  },
+  "PROFILE": {
+    "TITLE": "My Profile",
+    "MY_PROFILE": "My Profile",
+    "NAME": "Name",
+    "LAST_NAME": "Last Name",
+    "EMAIL": "Email",
+    "LANGUAGE": "Language",
+    "EDIT_PROFILE": "Edit Profile",
+    "SAVE_CHANGES": "Save Changes",
+    "CANCEL": "Cancel",
+    "UPDATE_SUCCESS": "Profile updated successfully",
+    "GOOGLE_USER_MESSAGE": "Your profile is linked with Google. Some data cannot be edited here.",
+    "GOOGLE_USER": "Google",
+    "CHANGE_PASSWORD": "Change Password",
+    "PASSWORD_FEATURE": "Password change feature coming soon",
+    "LOGOUT": "Logout",
+    "UNAUTHENTICATED": "User not authenticated",
+    "LOADING_PROFILE": "Loading profile...",
+    "PROFILE_PHOTO": "Profile photo"
+  },
+  "COMMON": {
+    "REQUIRED_FIELD": "This field is required",
+    "INVALID_EMAIL": "Please enter a valid email",
+    "MIN_LENGTH": "Minimum length is 6 characters",
+    "LOADING": "Loading...",
+    "SUBMIT": "Submit",
+    "EDIT": "Edit",
+    "SAVE": "Save"
+  },
+  "LANGUAGES": {
+    "ENGLISH": "English",
+    "SPANISH": "Spanish"
+  }
+}

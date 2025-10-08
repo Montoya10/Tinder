@@ -1,0 +1,96 @@
+<ion-content [fullscreen]="true">
+  <form [formGroup]="registerForm" (ngSubmit)="doRegister()">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>{{ 'REGISTER.TITLE' | translate }}</ion-card-title>
+      </ion-card-header>
+      
+      <ion-card-content>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <app-input
+                [label]="'REGISTER.NAME' | translate"
+                [placeholder]="'REGISTER.NAME' | translate"
+                type="text"
+                [control]="name"
+              >
+              </app-input>
+            </ion-col>
+          </ion-row>
+          
+          <ion-row>
+            <ion-col>
+              <app-input
+                [label]="'REGISTER.LAST_NAME' | translate"
+                [placeholder]="'REGISTER.LAST_NAME' | translate"
+                type="text"
+                [control]="lastName"
+              >
+              </app-input>
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col>
+              <app-input
+                [label]="'REGISTER.EMAIL' | translate"
+                [placeholder]="'REGISTER.EMAIL' | translate"
+                type="text"
+                [control]="email"
+              >
+              </app-input>
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col>
+              <app-input
+                [label]="'REGISTER.PASSWORD' | translate"
+                [placeholder]="'REGISTER.PASSWORD' | translate"
+                type="password"
+                [control]="password"
+              >
+              </app-input>
+            </ion-col>
+          </ion-row>
+
+          <!-- Componente de radio personalizado para idiomas -->
+          <ion-row>
+            <ion-col>
+              <app-radio
+                [label]="'REGISTER.LANGUAGE' | translate"
+                [justify]="'start'"
+                [value]="currentLang"
+                [languajes]="true"
+                (valueChange)="changeLang($event)"
+              ></app-radio>
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col>
+              <app-button
+                [value]="'REGISTER.REGISTER_BUTTON' | translate"
+                type="submit"
+                [disabled]="registerForm.invalid"
+              ></app-button>
+            </ion-col>
+          </ion-row>
+          
+          <ion-row>
+            <ion-col>
+              <ion-text>{{ 'REGISTER.HAVE_ACCOUNT' | translate }}</ion-text>
+              <app-button
+                [value]="'REGISTER.LOGIN_HERE' | translate"
+                type="button"
+                fill="clear"
+                (click)="goToLogin()"
+              ></app-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card-content>
+    </ion-card>
+  </form>
+</ion-content>

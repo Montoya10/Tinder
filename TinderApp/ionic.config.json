@@ -1,0 +1,7 @@
+{
+  "name": "Wallpapersapp",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

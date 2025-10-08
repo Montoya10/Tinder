@@ -1,0 +1,135 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <app-back-button
+        [defaultBack]="'/tabs'"
+        [color]="'primary'"
+        [fill]="'clear'"
+        [icon]="'arrow-back'"
+      >
+      </app-back-button>
+    </ion-buttons>
+    <ion-title>{{ fullName }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="logout()">
+        <ion-icon name="log-out-outline"></ion-icon>
+        <ion-label>{{ 'PROFILE.LOGOUT' | translate }}</ion-label>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="profile-container">
+
+
+    <div class="profile-header" *ngIf="userPhoto">
+      <ion-avatar class="profile-avatar">
+        <img [src]="userPhoto" [alt]="'PROFILE.PROFILE_PHOTO' | translate" />
+      </ion-avatar>
+      <ion-badge *ngIf="isGoogleUser" color="primary">
+        <ion-icon name="logo-google"></ion-icon>
+        {{ 'PROFILE.GOOGLE_USER' | translate }}
+      </ion-badge>
+    </div>
+
+    <!-- Mensaje para usuarios de Google -->
+    <ion-note *ngIf="isGoogleUser" color="medium" class="google-note">
+      <ion-icon name="information-circle"></ion-icon>
+      {{ getGoogleUserMessage() }}
+    </ion-note>
+
+    <!-- Spinner de carga -->
+    <ion-spinner *ngIf="isLoading" class="center-spinner"></ion-spinner>
+
+    <!-- Formulario de perfil -->
+    <form [formGroup]="profileForm" *ngIf="!isLoading">
+      <ion-item>
+        <ion-label position="stacked"
+          >{{ 'PROFILE.NAME' | translate }}</ion-label
+        >
+        <ion-input
+          formControlName="name"
+          type="text"
+          [disabled]="isGoogleUser"
+          [placeholder]="'PROFILE.NAME' | translate"
+        >
+        </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked"
+          >{{ 'PROFILE.LAST_NAME' | translate }}</ion-label
+        >
+        <ion-input
+          formControlName="lastName"
+          type="text"
+          [placeholder]="'PROFILE.LAST_NAME' | translate"
+        >
+        </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked"
+          >{{ 'PROFILE.EMAIL' | translate }}</ion-label
+        >
+        <ion-input
+          formControlName="email"
+          type="email"
+          [placeholder]="'PROFILE.EMAIL' | translate"
+        >
+        </ion-input>
+      </ion-item>
+      <ion-item>
+        <app-radio
+          [label]="'PROFILE.LANGUAGE' | translate"
+          [justify]="'start'"
+          [value]="currentLang"
+          [languajes]="true"
+          (valueChange)="changeLang($event)"
+        ></app-radio>
+      </ion-item>
+      <!-- Botones de acción -->
+      <div class="action-buttons">
+        <!-- Botón Editar (solo visible cuando no está editando) -->
+        <div *ngIf="!isEditing && !isGoogleUser" class="button-with-icon">
+          <ion-icon name="create-outline" slot="start"></ion-icon>
+          <app-button
+            [value]="'PROFILE.EDIT_PROFILE' | translate"
+            fill="solid"
+            (click)="toggleEdit()"
+          >
+          </app-button>
+        </div>
+
+        <!-- Botones durante edición -->
+        <div *ngIf="isEditing" class="edit-buttons">
+          <!-- Botón Guardar -->
+          <div class="button-with-icon">
+            <ion-icon name="save-outline" slot="start"></ion-icon>
+            <app-button
+              [value]="'PROFILE.SAVE_CHANGES' | translate"
+              fill="solid"
+              color="secondary"
+              [disabled]="profileForm.invalid"
+              (click)="updateProfile()"
+            >
+            </app-button>
+          </div>
+
+          <!-- Botón Cancelar -->
+          <div class="button-with-icon">
+            <ion-icon name="close-outline" slot="start"></ion-icon>
+            <app-button
+              [value]="'PROFILE.CANCEL' | translate"
+              fill="outline"
+              color="secondary"
+              (click)="toggleEdit()"
+            >
+            </app-button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</ion-content>

@@ -1,0 +1,56 @@
+<ion-grid>
+  <ion-row>
+    
+    @if (isLoading) {
+      <ion-col size="12">
+        <div class="loading-container">
+          <ion-spinner></ion-spinner>
+          <p>Subiendo imagen...</p>
+        </div>
+      </ion-col>
+    }
+
+    
+    @if (imageUrls.length === 0 && isLoading) {
+      @for (item of [1,2,3,4]; track item) {
+        <ion-col size="6">
+          <div class="skeleton-card">
+            <div class="skeleton-image"></div>
+          </div>
+        </ion-col>
+      }
+    }
+
+    
+    @if (imageUrls.length > 0) {
+      @for (image of imageUrls; track image.id; let i = $index) {
+        <ion-col size="6">
+          <div class="image-card">
+            <img [src]="image.url" alt="Wallpaper" class="grid-image" />
+            <div class="image-overlay">
+              <ion-button 
+                fill="clear" 
+                color="light" 
+                size="small"
+                (click)="removeImage(image)"
+              >
+                <ion-icon name="close" slot="icon-only"></ion-icon>
+              </ion-button>
+            </div>
+          </div>
+        </ion-col>
+      }
+    }
+
+    
+    @if (imageUrls.length === 0 && !isLoading) {
+      <ion-col size="12">
+        <div class="empty-state">
+          <ion-icon name="images-outline"></ion-icon>
+          <p>No hay wallpapers para mostrar</p>
+          <p class="empty-subtitle">Haz clic en + para agregar uno</p>
+        </div>
+      </ion-col>
+    }
+  </ion-row>
+</ion-grid>
