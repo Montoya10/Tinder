@@ -6,9 +6,8 @@ import { Auth } from './providers/auth/auth';
 import { getAuth, provideAuth } from '@angular/fire/auth';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { Query } from './services/query/query';
-import { File } from './providers/file/file';
+import { Filepicker } from './providers/filepicker/filepicker';
 import { Capacitor } from '@capacitor/core';
-
 
 @NgModule({
   declarations: [],
@@ -19,18 +18,17 @@ import { Capacitor } from '@capacitor/core';
     provideFirebaseApp(() => initializeApp((environment.FIREBASE))),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
-    Auth, Query, File
+  Auth, Query, Filepicker
   ]
 })
 export class CoreModule implements OnInit { 
-  constructor(private readonly fileSrv: File){
-    if(Capacitor.isNativePlatform()){
+  constructor(private readonly filepicker: Filepicker) {
+    if (Capacitor.isNativePlatform()) {
       this.ngOnInit();
     }
-    
   }
-  async ngOnInit(){
+  async ngOnInit() {
     console.log("requesting permissions");
-    await this.fileSrv.requestPermissions();
+    await this.filepicker.requestPermissions();
   }
 }

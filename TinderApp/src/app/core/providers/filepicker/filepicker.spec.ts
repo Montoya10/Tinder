@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { File } from './file';
+import { Filepicker } from './filepicker';
 
-describe('File', () => {
-  let service: File;
+describe('Filepicker', () => {
+  let service: Filepicker;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(File);
+    service = TestBed.inject(Filepicker);
   });
 
   it('should be created', () => {

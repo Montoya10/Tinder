@@ -134,6 +134,7 @@
               }
               @else if(page==4){
                 <app-button label="Select Images" fill="solid" type="button" (click)="selectImages()"></app-button>
+                <app-button label="Registrar" fill="solid" type="button" [disabled]="!registerForm.valid" (click)="registerUser()"></app-button>
               }
             </ion-grid>
           </app-card>

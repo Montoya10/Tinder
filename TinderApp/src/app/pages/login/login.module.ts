@@ -8,7 +8,7 @@ import { LoginPageRoutingModule } from './login-routing.module';
 
 import { LoginPage } from './login.page';
 import { SharedModule } from 'src/app/shared/shared-module';
-import { CoreModule } from 'src/app/core/core-module';
+import { CoreModule } from 'src/app/core/core.module';
 
 @NgModule({
   imports: [

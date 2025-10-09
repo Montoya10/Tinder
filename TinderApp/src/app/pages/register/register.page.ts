@@ -1,7 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { File } from 'src/app/core/providers/file/file';
+import { Filepicker } from 'src/app/core/providers/filepicker/filepicker';
+import { Uploader } from 'src/app/core/services/uploader/uploader';
+import { Auth } from 'src/app/core/providers/auth/auth';
+import { Query } from 'src/app/core/services/query/query';
+import { Router } from '@angular/router';
+import { Toast } from '@capacitor/toast';
 
 @Component({
   selector: 'app-register',
@@ -9,7 +14,7 @@ import { File } from 'src/app/core/providers/file/file';
   styleUrls: ['./register.page.scss'],
   standalone: false,
 })
-export class RegisterPage implements OnInit {
+export class RegisterPage implements OnInit, OnDestroy {
   public page = 0;
   public gender = '';
   public registerForm!: FormGroup;
@@ -32,7 +37,14 @@ export class RegisterPage implements OnInit {
 
   // Opciones para el radio de género
 
-  constructor(private formBuilder: FormBuilder, private readonly fileSrv: File) {
+  constructor(
+    private formBuilder: FormBuilder,
+    private readonly filepicker: Filepicker,
+    private readonly uploader: Uploader,
+    private readonly auth: Auth,
+    private readonly query: Query,
+    private readonly router: Router
+  ) {
     this.initForm();
   }
 
@@ -48,7 +60,8 @@ export class RegisterPage implements OnInit {
   }
 
   changePage(next: boolean) {
-    const maxPage = 2;
+    // Ajustar el número máximo de página según la plantilla (0..4)
+    const maxPage = 4;
     if (next) {
       if (this.isPageValid() && this.page < maxPage) {
         this.page++;
@@ -165,13 +178,58 @@ export class RegisterPage implements OnInit {
 
   public async selectImages() {
     try {
-      const images = await this.fileSrv.pickImage();
-      const data = images?.data ?? [];
-      console.log('Selected images:', data);
-      this.getControl('photos')?.setValue(data);
+      const image = await this.filepicker.pickImage();
+      if (!image?.data) throw new Error('No se seleccionó imagen');
+      // El uploader espera base64 sin prefijo data:...
+      let base64 = image.data;
+      if (base64.startsWith('data:')) {
+        base64 = base64.split(',')[1];
+      }
+      const url = await this.uploader.upload(
+        'avatars', // bucket
+        'users',    // folder
+        image.name ?? `image-${Date.now()}`,
+        base64,
+        image.MimeType || 'image/jpeg'
+      );
+      const current = this.getControl('photos')?.value || [];
+      this.getControl('photos')?.setValue([...current, url]);
       this.getControl('photos')?.markAsTouched();
     } catch (err) {
-      console.error('Error selecting images', err);
+      console.error('Error seleccionando o subiendo imagen:', err);
+    }
+  }
+
+  public async registerUser() {
+    if (!this.registerForm.valid) return;
+    const form = this.registerForm.value;
+    const credentials = {
+      email: form.email,
+      password: form.password
+    };
+    const userData = {
+      uid: '',
+      name: form.firstName,
+      lastName: form.lastName,
+      birthDate: form.birthdate,
+      country: form.country,
+      city: form.city || '',
+      gender: form.gender,
+      showGenderProfile: form.showGenderProfile,
+      passions: (form.passion || []).map((p: string) => ({ category: p })),
+      photos: form.photos || [],
+      uuid: ''
+    };
+    try {
+      const uid = await this.auth.register(credentials, userData);
+      userData.uid = uid;
+      userData.uuid = uid;
+      await this.query.create('users', userData, uid);
+      await Toast.show({ text: 'Registro exitoso', duration: 'short' });
+      this.router.navigate(['/login']);
+    } catch (err) {
+      await Toast.show({ text: 'Error al registrar usuario', duration: 'long' });
+      console.error('Error al registrar usuario:', err);
     }
   }
 
