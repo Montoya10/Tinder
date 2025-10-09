@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { Wallpaper } from './wallpaper';
+import { File } from './file';
 
-describe('Wallpaper', () => {
-  let service: Wallpaper;
+describe('File', () => {
+  let service: File;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(Wallpaper);
+    service = TestBed.inject(File);
   });
 
   it('should be created', () => {

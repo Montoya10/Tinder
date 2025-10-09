@@ -1,44 +1,36 @@
-import { Query } from './providers/query/query';
-import { NgModule } from '@angular/core';
+import { NgModule, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
-import { provideAuth, getAuth } from '@angular/fire/auth';
+import {provideFirebaseApp, initializeApp, getApp} from "@angular/fire/app"
 import { environment } from 'src/environments/environment.prod';
-import { ErrorHandler } from './services/error-handler/error-handler';
-import {provideFirestore, getFirestore} from '@angular/fire/firestore'
-import { Auth } from './services/auth/auth';
-import { Filepicker } from './providers/filepicker/filepicker';
+import { Auth } from './providers/auth/auth';
+import { getAuth, provideAuth } from '@angular/fire/auth';
+import { getFirestore, provideFirestore } from '@angular/fire/firestore';
+import { Query } from './services/query/query';
+import { File } from './providers/file/file';
 import { Capacitor } from '@capacitor/core';
-import { Uploader } from './providers/uploader/uploader';
-import { TranslateModule } from '@ngx-translate/core';
-
-const providers =[Filepicker, Uploader]
-
 
 
 @NgModule({
   declarations: [],
-  imports: [CommonModule,TranslateModule,],
-  exports: [TranslateModule,],
-  providers: [
-    provideFirebaseApp(() => initializeApp(environment.FIREBASE_APP)),
-    provideAuth(() => getAuth()),
-    provideFirestore(()=>getFirestore()), [Filepicker],
-    Auth, Query,
-    ErrorHandler,
+  imports: [
+    CommonModule
   ],
-}
-)
-export class CoreModule {
-  constructor(private readonly fileSrv: Filepicker){
-    this.ngOnInit();
-  }
-
-  async ngOnInit() {
-    if(Capacitor.isNativePlatform ()){
-
-      await this.fileSrv.requestPermissions();
-
+  providers: [
+    provideFirebaseApp(() => initializeApp((environment.FIREBASE))),
+    provideAuth(() => getAuth()),
+    provideFirestore(() => getFirestore()),
+    Auth, Query, File
+  ]
+})
+export class CoreModule implements OnInit { 
+  constructor(private readonly fileSrv: File){
+    if(Capacitor.isNativePlatform()){
+      this.ngOnInit();
     }
+    
+  }
+  async ngOnInit(){
+    console.log("requesting permissions");
+    await this.fileSrv.requestPermissions();
   }
 }

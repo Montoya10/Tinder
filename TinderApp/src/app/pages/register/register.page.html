@@ -1,96 +1,144 @@
 <ion-content [fullscreen]="true">
-  <form [formGroup]="registerForm" (ngSubmit)="doRegister()">
-    <ion-card>
-      <ion-card-header>
-        <ion-card-title>{{ 'REGISTER.TITLE' | translate }}</ion-card-title>
-      </ion-card-header>
-      
-      <ion-card-content>
-        <ion-grid>
-          <ion-row>
-            <ion-col>
-              <app-input
-                [label]="'REGISTER.NAME' | translate"
-                [placeholder]="'REGISTER.NAME' | translate"
-                type="text"
-                [control]="name"
-              >
-              </app-input>
-            </ion-col>
-          </ion-row>
-          
-          <ion-row>
-            <ion-col>
-              <app-input
-                [label]="'REGISTER.LAST_NAME' | translate"
-                [placeholder]="'REGISTER.LAST_NAME' | translate"
-                type="text"
-                [control]="lastName"
-              >
-              </app-input>
-            </ion-col>
-          </ion-row>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <form [formGroup]="registerForm">
+          <app-card>
+            <ion-grid>
+              @if(page==0){
+              <ion-row>
+                <ion-col>
+                  <app-input label="First Name" placeholder="Enter your first name" type="text"
+                    [control]="registerForm.get('firstName')"></app-input>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col>
+                  <app-input label="Last Name" placeholder="Enter your last name" type="text"
+                    [control]="registerForm.get('lastName')"></app-input>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col>
+                  <app-input label="Email" placeholder="Enter your email" type="email"
+                    [control]="registerForm.get('email')"></app-input>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col>
+                  <app-input label="Password" placeholder="Enter your password" type="password"
+                    [control]="registerForm.get('password')"></app-input>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col>
+                  <app-input label="Country" placeholder="Enter your country" type="text"
+                    [control]="registerForm.get('country')"></app-input>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col>
+                  <app-button label="continue" fill="solid" [disabled]="false" type="button"
+                    (click)="changePage(true)"></app-button>
+                </ion-col>
+              </ion-row>
+              }
+              @else if(page==1){
+              <ion-row>
+                <ion-col>
+                  <app-button label="Male" fill="solid" type="button" (click)="selectGender('male')"></app-button>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col>
+                  <app-button label="Female" fill="solid" type="button" (click)="selectGender('female')"></app-button>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col>
+                  <ion-checkbox formControlName="showGenderProfile">Show my Gender Profile</ion-checkbox>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col>
+                  <app-button label="Continue" fill="solid" type="button" (click)="changePage(true)"></app-button>
+                </ion-col>
+              </ion-row>
+              }
+              @else if(page==2){
+              <ion-row>
+                <ion-col>
+                  <app-input label="Birthdate" placeholder="Enter your birthdate" type="date"
+                    [control]="registerForm.get('birthdate')"></app-input>
+                </ion-col>
+              </ion-row>
+              @if(getFieldError('birthdate')) {
+              <ion-row>
+                <ion-col>
+                  <ion-text color="danger">
+                    <small>{{ getFieldError('birthdate') }}</small>
+                  </ion-text>
+                </ion-col>
+              </ion-row>
+              }
+              <ion-row>
+                <ion-col>
+                  <app-button label="Continue" fill="solid" type="button" [disabled]="!isPageValid()"
+                    (click)="changePage(true)"></app-button>
+                </ion-col>
+              </ion-row>
+              }
 
-          <ion-row>
-            <ion-col>
-              <app-input
-                [label]="'REGISTER.EMAIL' | translate"
-                [placeholder]="'REGISTER.EMAIL' | translate"
-                type="text"
-                [control]="email"
-              >
-              </app-input>
-            </ion-col>
-          </ion-row>
-
-          <ion-row>
-            <ion-col>
-              <app-input
-                [label]="'REGISTER.PASSWORD' | translate"
-                [placeholder]="'REGISTER.PASSWORD' | translate"
-                type="password"
-                [control]="password"
-              >
-              </app-input>
-            </ion-col>
-          </ion-row>
-
-          <!-- Componente de radio personalizado para idiomas -->
-          <ion-row>
-            <ion-col>
-              <app-radio
-                [label]="'REGISTER.LANGUAGE' | translate"
-                [justify]="'start'"
-                [value]="currentLang"
-                [languajes]="true"
-                (valueChange)="changeLang($event)"
-              ></app-radio>
-            </ion-col>
-          </ion-row>
-
-          <ion-row>
-            <ion-col>
-              <app-button
-                [value]="'REGISTER.REGISTER_BUTTON' | translate"
-                type="submit"
-                [disabled]="registerForm.invalid"
-              ></app-button>
-            </ion-col>
-          </ion-row>
-          
-          <ion-row>
-            <ion-col>
-              <ion-text>{{ 'REGISTER.HAVE_ACCOUNT' | translate }}</ion-text>
-              <app-button
-                [value]="'REGISTER.LOGIN_HERE' | translate"
-                type="button"
-                fill="clear"
-                (click)="goToLogin()"
-              ></app-button>
-            </ion-col>
-          </ion-row>
-        </ion-grid>
-      </ion-card-content>
-    </ion-card>
-  </form>
+              @else if(page==3){
+                <ion-row>
+                  <ion-col>
+                    <app-button label = "Sports" [fill]="isPassionSelected('sports') ? 'solid' : 'outline'" [color]="isPassionSelected('sports') ? 'primary' : 'medium'" type="button" (click)="selectInterest('sports')"></app-button>
+                  </ion-col>
+                  <ion-col>
+                    <app-button label = "Music" [fill]="isPassionSelected('music') ? 'solid' : 'outline'" [color]="isPassionSelected('music') ? 'primary' : 'medium'" type="button" (click)="selectInterest('music')"></app-button>
+                  </ion-col>
+                  <ion-col>
+                    <app-button label = "Travel" [fill]="isPassionSelected('travel') ? 'solid' : 'outline'" [color]="isPassionSelected('travel') ? 'primary' : 'medium'" type="button" (click)="selectInterest('travel')"></app-button>
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col>
+                    <app-button label = "Movies" [fill]="isPassionSelected('movies') ? 'solid' : 'outline'" [color]="isPassionSelected('movies') ? 'primary' : 'medium'" type="button" (click)="selectInterest('movies')"></app-button>
+                  </ion-col>
+                  <ion-col>
+                    <app-button label = "Books" [fill]="isPassionSelected('books') ? 'solid' : 'outline'" [color]="isPassionSelected('books') ? 'primary' : 'medium'" type="button" (click)="selectInterest('books')"></app-button>
+                  </ion-col>
+                  <ion-col>
+                    <app-button label = "Art" [fill]="isPassionSelected('art') ? 'solid' : 'outline'" [color]="isPassionSelected('art') ? 'primary' : 'medium'" type="button" (click)="selectInterest('art')"></app-button>
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col>
+                    <app-button label = "Cooking" [fill]="isPassionSelected('cooking') ? 'solid' : 'outline'" [color]="isPassionSelected('cooking') ? 'primary' : 'medium'" type="button" (click)="selectInterest('cooking')"></app-button>
+                  </ion-col>
+                  <ion-col>
+                    <app-button label = "Video Games" [fill]="isPassionSelected('video_games') ? 'solid' : 'outline'" [color]="isPassionSelected('video_games') ? 'primary' : 'medium'" type="button" (click)="selectInterest('video_games')"></app-button>
+                  </ion-col>
+                  <ion-col>
+                    <app-button label = "Gym" [fill]="isPassionSelected('gym') ? 'solid' : 'outline'" [color]="isPassionSelected('gym') ? 'primary' : 'medium'" type="button" (click)="selectInterest('gym')"></app-button>
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                <ion-col>
+                  <app-button label="Return" fill="solid" type="button" (click)="changePage(false)"></app-button>
+                </ion-col>
+                <ion-col>
+                  <app-button label="Continue" fill="solid" type="button" (click)="changePage(true)"></app-button>
+                </ion-col>
+              </ion-row>
+              }
+              @else if(page==4){
+                <app-button label="Select Images" fill="solid" type="button" (click)="selectImages()"></app-button>
+              }
+            </ion-grid>
+          </app-card>
+        </form>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>

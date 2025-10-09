@@ -1,65 +1,32 @@
 <ion-content [fullscreen]="true">
-  <form [formGroup]="loginForm" (ngSubmit)="doLogin()">
-    <ion-card>
-      <ion-card-header>
-        <ion-card-title>{{ 'LOGIN.TITLE' | translate }}</ion-card-title>
-      </ion-card-header>
-
-      <ion-card-content>
-        <ion-grid>
-          <ion-row>
-            <ion-col>
-              <app-input
-                [label]="'LOGIN.EMAIL' | translate"
-                [placeholder]="'LOGIN.EMAIL' | translate"
-                type="text"
-                [control]="email"
-              >
-              </app-input>
-            </ion-col>
-          </ion-row>
-
-          <ion-row>
-            <ion-col>
-              <app-input
-                [label]="'LOGIN.PASSWORD' | translate"
-                [placeholder]="'LOGIN.PASSWORD' | translate"
-                type="password"
-                [control]="password"
-              >
-              </app-input>
-            </ion-col>
-          </ion-row>
-
-          <ion-row>
-            <ion-col>
-              <app-button
-                [value]="'LOGIN.LOGIN_BUTTON' | translate"
-                type="submit"
-                [disabled]="loginForm.invalid"
-              ></app-button>
-            </ion-col>
-            <ion-col>
-              <ion-button fill="outline" (click)="doLoginWithGoogle()">
-                <ion-icon name="logo-google"></ion-icon>
-                <ion-text>{{ 'LOGIN.GOOGLE_LOGIN' | translate }}</ion-text>
-              </ion-button>
-            </ion-col>
-          </ion-row>
-
-          <ion-row>
-            <ion-col>
-              <ion-text>{{ 'LOGIN.NO_ACCOUNT' | translate }}</ion-text>
-              <app-button
-                [value]="'LOGIN.REGISTER_HERE' | translate"
-                type="button"
-                (click)="goToRegister()"
-                fill="clear"
-              ></app-button>
-            </ion-col>
-          </ion-row>
-        </ion-grid>
-      </ion-card-content>
-    </ion-card>
-  </form>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <app-card>
+          <form [formGroup] = "loginForm" (ngSubmit) = "onSubmit()">
+            <ion-grid>
+              <ion-row>
+                <ion-col>
+                  <app-input label="Email" placeholder="Enter Email" type="email" [control] = "email"></app-input>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col>
+                  <app-input label="Password" placeholder="Enter password" type="password" [control] = "password"></app-input>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col>
+                  <app-button label="Login" fill="solid" type="submit" [disabled]="loginForm.invalid"></app-button>
+                </ion-col>
+                <ion-col>
+                  <app-button label="Register" fill="outline" tyoe="button" (click)="goToRegister()"></app-button>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </form>
+        </app-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>

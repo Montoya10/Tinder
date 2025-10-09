@@ -1,14 +1,16 @@
-import { Component, OnInit } from '@angular/core';
-import { IonCardHeader, IonCard } from "@ionic/angular/standalone";
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-card',
   templateUrl: './card.component.html',
   styleUrls: ['./card.component.scss'],
-  standalone:false
+  standalone: false,
 })
 export class CardComponent  implements OnInit {
-
+   @Input () imgSrc : string = '';
+   @Input () title : string = '';
+   @Input () subtitle : string = '';
+   @Input () text : string = '';
   constructor() { }
 
   ngOnInit() {}

@@ -7,10 +7,8 @@ import { IonicModule } from '@ionic/angular';
 import { RegisterPageRoutingModule } from './register-routing.module';
 
 import { RegisterPage } from './register.page';
-
-import { SharedModule } from 'src/app/shared/shared-module';
 import { CoreModule } from 'src/app/core/core-module';
-
+import { SharedModule } from 'src/app/shared/shared-module';
 
 @NgModule({
   imports: [
@@ -19,10 +17,9 @@ import { CoreModule } from 'src/app/core/core-module';
     IonicModule,
     RegisterPageRoutingModule,
     SharedModule,
-    FormsModule,
-    ReactiveFormsModule,
-    CoreModule
+    CoreModule,
+    ReactiveFormsModule
   ],
-  declarations: [RegisterPage],
+  declarations: [RegisterPage]
 })
 export class RegisterPageModule {}

@@ -1,57 +1,36 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
-import {
-  AuthGuard,
-  redirectLoggedInTo,
-  redirectUnauthorizedTo,
-} from '@angular/fire/auth-guard';
+import { AuthGuard, redirectLoggedInTo ,redirectUnauthorizedTo } from '@angular/fire/auth-guard';
 
-const isLogged = () => redirectLoggedInTo(['/home']);
-const isNotLogged = () => redirectUnauthorizedTo(['/login']);
+const isloggedIn = () => redirectLoggedInTo(['/home']);
+const isNotLoggedIn = () => redirectUnauthorizedTo(['/login']);
 
 const routes: Routes = [
   {
-    path: 'home',
-    loadChildren: () =>
-      import('./pages/home/home.module').then((m) => m.HomePageModule),
-    canActivate: [AuthGuard],
-    data: { authGuardPipe: isNotLogged },
-  },
-
-  {
     path: 'login',
-    loadChildren: () =>
-      import('./pages/login/login.module').then((m) => m.LoginPageModule),
-    canActivate: [AuthGuard],
-    data: { authGuardPipe: isLogged },
+    loadChildren: () => import('./pages/login/login.module').then( m => m.LoginPageModule)
   },
   {
     path: 'register',
-    loadChildren: () =>
-      import('./pages/register/register.module').then(
-        (m) => m.RegisterPageModule
-      ),
+    loadChildren: () => import('./pages/register/register.module').then( m => m.RegisterPageModule)
   },
   {
-    path: 'updateuser',
-    loadChildren: () =>
-      import('./pages/updateuser/updateuser.module').then(
-        (m) => m.UpdateuserPageModule
-      ),
+    path: 'home',
+    loadChildren: () => import('./pages/home/home.module').then( m => m.HomePageModule),
     canActivate: [AuthGuard],
-    data: { authGuardPipe: isNotLogged },
+    data: { authGuardPipe: isNotLoggedIn }
   },
   {
     path: '**',
     redirectTo: 'login',
-    pathMatch: 'full',
+    pathMatch: 'full'
   },
 ];
 
 @NgModule({
   imports: [
-    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules }),
+    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })
   ],
-  exports: [RouterModule],
+  exports: [RouterModule]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }
