@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { File } from 'src/app/core/providers/file/file';
 
 @Component({
@@ -9,10 +10,11 @@ import { File } from 'src/app/core/providers/file/file';
   standalone: false,
 })
 export class RegisterPage implements OnInit {
-  public page: number = 0;
-  public gender : string = '';
-  public registerForm !: FormGroup;
-  public ageError: string = '';
+  public page = 0;
+  public gender = '';
+  public registerForm!: FormGroup;
+  public ageError = '';
+  private birthdateSub?: Subscription;
 
   public passionsOps = [
     { label: 'Sports', value: 'sports' },
@@ -21,7 +23,6 @@ export class RegisterPage implements OnInit {
     { label: 'Reading', value: 'reading' },
     { label: 'Movies', value: 'movies' },
     { label: 'Cooking', value: 'cooking' },
-    { label: 'Movies', value: 'movies' },
     { label: 'Yoga', value: 'yoga' },
     { label: 'Video Games', value: 'video_games' },
     { label: 'Books', value: 'books' },
@@ -34,90 +35,98 @@ export class RegisterPage implements OnInit {
   constructor(private formBuilder: FormBuilder, private readonly fileSrv: File) {
     this.initForm();
   }
-  
+
   ngOnInit() {
-    // Marcar el campo birthdate como touched cuando cambie para mostrar errores inmediatamente
-    this.registerForm.get('birthdate')?.valueChanges.subscribe(() => {
-      this.registerForm.get('birthdate')?.markAsTouched();
+    // Marcar birthdate como touched al cambiar su valor para disparar validación inmediata
+    this.birthdateSub = this.getControl('birthdate')?.valueChanges.subscribe(() => {
+      this.getControl('birthdate')?.markAsTouched();
     });
   }
 
+  ngOnDestroy(): void {
+    this.birthdateSub?.unsubscribe();
+  }
+
   changePage(next: boolean) {
-    if (next && this.isPageValid()) {
-      this.page++;
-    } else if (!next) {
-      this.page--;
+    const maxPage = 2;
+    if (next) {
+      if (this.isPageValid() && this.page < maxPage) {
+        this.page++;
+      }
+    } else {
+      if (this.page > 0) this.page--;
     }
-    console.log(this.registerForm.value);
+    console.log('Register form snapshot:', this.registerForm.value);
   }
 
   public selectGender(value: string) {
     this.gender = value;
-    this.registerForm.get('gender')?.setValue(value);
+    this.getControl('gender')?.setValue(value);
+    this.getControl('gender')?.markAsTouched();
   }
 
   public isPageValid(): boolean {
     if (this.page === 0) {
       const requiredFields = ['firstName', 'lastName', 'email', 'password', 'country'];
-      return requiredFields.every(field => {
-        const control = this.registerForm.get(field);
-        return control && control.valid;
-      });
+      return requiredFields.every(name => this.getControl(name)?.valid ?? false);
     }
+
     if (this.page === 1) {
       // Validar que se haya seleccionado un género
-      const genderControl = this.registerForm.get('gender');
-      return !!(genderControl && genderControl.valid && genderControl.value !== '');
+      const g = this.getControl('gender');
+      return !!(g && g.valid && g.value);
     }
+
     if (this.page === 2) {
-      // Validar que la fecha de nacimiento sea válida y mayor de 18 años
-      const birthdateControl = this.registerForm.get('birthdate');
-      return !!(birthdateControl && birthdateControl.valid);
+      const b = this.getControl('birthdate');
+      return !!(b && b.valid);
     }
+
     return true;
   }
 
 
   private ageValidator(control: AbstractControl): ValidationErrors | null {
-    if (!control.value) {
-      return null;
-    }
+    const value = control.value;
+    if (!value) return null;
 
-    const birthDate = new Date(control.value);
-    const today = new Date();
-    today.setDate(today.getDate() - 1);
-    const age = today.getFullYear() - birthDate.getFullYear();
-    const monthDiff = today.getMonth() - birthDate.getMonth();
-    
+    const birthDate = new Date(value);
+    if (isNaN(birthDate.getTime())) return { invalidDate: true };
 
-    const exactAge = monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate()) 
-      ? age - 1 
-      : age;
-
-    if (exactAge < 18) {
-      return { underage: { requiredAge: 18, currentAge: exactAge } };
-    }
+    const currentAge = this.calculateAge(birthDate);
+    if (currentAge < 18) return { underage: { requiredAge: 18, currentAge } };
 
     return null;
   }
 
-  public getFieldError(fieldName: string): string {
-    const field = this.registerForm.get(fieldName);
-    if (field && field.errors && field.touched) {
-      if (field.errors['required']) {
-        return `${fieldName} is required`;
-      }
-      if (field.errors['email']) {
-        return 'Please enter a valid email';
-      }
-      if (field.errors['minlength']) {
-        return `Password must be at least ${field.errors['minlength'].requiredLength} characters`;
-      }
-      if (field.errors['underage']) {
-        return `You must be at least 18 years old. Current age: ${field.errors['underage'].currentAge}`;
-      }
+  private calculateAge(birthDate: Date): number {
+    const today = new Date();
+    // Restar un día para evitar problemas con zonas horarias y nacidos hoy
+    today.setDate(today.getDate() - 1);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
     }
+    return age;
+  }
+
+  public getFieldError(fieldName: string): string {
+    const field = this.getControl(fieldName);
+    if (!field || !field.errors || !field.touched) return '';
+
+    if (field.errors['required']) return `${this.humanize(fieldName)} es requerido`;
+    if (field.errors['email']) return 'Introduce un correo electrónico válido';
+    if (field.errors['minlength']) return `La contraseña debe tener al menos ${field.errors['minlength'].requiredLength} caracteres`;
+    if (field.errors['underage']) return `Debes tener al menos 18 años. Edad actual: ${field.errors['underage'].currentAge}`;
+    if (field.errors['invalidDate']) return 'Fecha inválida';
+
     return '';
+  }
+
+  private humanize(name: string) {
+    // Convierte camelCase o snake_case a texto legible
+    return name.replace(/([A-Z])/g, ' $1').replace(/_/g, ' ').replace(/^./, str => str.toUpperCase());
   }
 
   private initForm() {
@@ -155,7 +164,18 @@ export class RegisterPage implements OnInit {
   }
 
   public async selectImages() {
-    const images = await this.fileSrv.pickImage();
-    console.log(images.data);
+    try {
+      const images = await this.fileSrv.pickImage();
+      const data = images?.data ?? [];
+      console.log('Selected images:', data);
+      this.getControl('photos')?.setValue(data);
+      this.getControl('photos')?.markAsTouched();
+    } catch (err) {
+      console.error('Error selecting images', err);
+    }
+  }
+
+  private getControl(name: string): AbstractControl | null {
+    return this.registerForm.get(name) ?? null;
   }
 }
