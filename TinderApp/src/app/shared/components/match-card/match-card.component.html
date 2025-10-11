@@ -1,0 +1,19 @@
+<ion-card *ngIf="user">
+  <ion-img [src]="user.photos[0] || ''" alt="photo"></ion-img>
+  <ion-card-header>
+    <ion-card-title>{{ user.name }}, {{ age }}</ion-card-title>
+    <ion-card-subtitle>{{ user.city || user.country }}</ion-card-subtitle>
+  </ion-card-header>
+
+  <ion-card-content>
+    <div class="passions">
+      <ion-chip *ngFor="let p of user.passions">
+        <ion-label>{{ p.category }}</ion-label>
+      </ion-chip>
+    </div>
+    <div class="actions">
+      <ion-button color="danger" fill="clear" (click)="onPass()">Pass</ion-button>
+      <ion-button color="primary" (click)="onLike()">Like</ion-button>
+    </div>
+  </ion-card-content>
+</ion-card>

@@ -4,12 +4,13 @@ import { IonicModule } from '@ionic/angular';
 import { InputComponent } from './components/input/input.component';
 import { CardComponent } from './components/card/card.component';
 import { ButtonComponent } from './components/button/button.component';
+import { MatchCardComponent } from './components/match-card/match-card.component';
 
 @NgModule({
   declarations: [InputComponent, CardComponent, ButtonComponent],
   imports: [
-    CommonModule, IonicModule
+    CommonModule, IonicModule, MatchCardComponent
   ],
-  exports: [InputComponent, CardComponent, ButtonComponent]
+  exports: [InputComponent, CardComponent, ButtonComponent, MatchCardComponent]
 })
 export class SharedModule { }

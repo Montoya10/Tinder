@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Form, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Auth } from 'src/app/core/providers/auth/auth';
-import { Credentials } from 'src/domain/model/credentials.model';
+import { Auth } from '../../core/providers/auth/auth';
+import { Credentials } from '../../../domain/model/credentials.model';
 
 @Component({
   selector: 'app-login',
@@ -25,7 +25,7 @@ export class LoginPage implements OnInit {
 
   private initForm(){
     this.email = new FormControl('', [Validators.required, Validators.email]);
-    this.password = new FormControl ('' , [Validators.required, Validators.minLength(8)]);
+    this.password = new FormControl ('' , [Validators.required, Validators.minLength(6)]);
 
     this.loginForm = new FormGroup ({
       email : this.email,

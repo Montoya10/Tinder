@@ -87,6 +87,21 @@ export class Query {
       throw error;
     }
   }
+
+  /**
+   * Lista TODOS los documentos de una colección
+   */
+  async listAll(collectionName: string) {
+    try {
+      const collect = collection(this.fs, collectionName);
+      const snap = await getDocs(collect);
+      return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    } catch (error) {
+      console.log((error as any).message);
+      throw error;
+    }
+  }
+
   /**
    * Elimina un documento por ID
    */
