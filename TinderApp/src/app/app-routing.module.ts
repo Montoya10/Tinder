@@ -21,6 +21,24 @@ const routes: Routes = [
     data: { authGuardPipe: isNotLoggedIn }
   },
   {
+    path: 'profile',
+    loadChildren: () => import('./pages/updateuser/updateuser.module').then( m => m.UpdateuserPageModule),
+    canActivate: [AuthGuard],
+    data: { authGuardPipe: isNotLoggedIn }
+  },
+  {
+    path: 'matches',
+    loadChildren: () => import('./pages/matches/matches.module').then( m => m.MatchesPageModule),
+    canActivate: [AuthGuard],
+    data: { authGuardPipe: isNotLoggedIn }
+  },
+  {
+    path: 'chat',
+    loadChildren: () => import('./pages/chat/chat.module').then( m => m.ChatPageModule),
+    canActivate: [AuthGuard],
+    data: { authGuardPipe: isNotLoggedIn }
+  },
+  {
     path: '**',
     redirectTo: 'login',
     pathMatch: 'full'

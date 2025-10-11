@@ -1,0 +1,53 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/matches"></ion-back-button>
+    </ion-buttons>
+    <ion-title *ngIf="matchedUser">
+      <div class="chat-header">
+        <ion-avatar>
+          <img [src]="matchedUser.photos?.[0] || 'assets/icon/default-avatar.png'" />
+        </ion-avatar>
+        <span>{{ matchedUser.name }}</span>
+      </div>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div *ngIf="isLoading" class="loading">
+    <ion-spinner></ion-spinner>
+  </div>
+
+  <div *ngIf="!isLoading && messages.length === 0" class="no-messages">
+    <ion-icon name="chatbubbles-outline"></ion-icon>
+    <p>No hay mensajes aún. ¡Empieza la conversación!</p>
+  </div>
+
+  <div class="messages-container">
+    <div *ngFor="let message of messages" 
+         [class.my-message]="isMyMessage(message)"
+         [class.their-message]="!isMyMessage(message)"
+         class="message">
+      <div class="message-bubble">
+        <p>{{ message.text }}</p>
+        <span class="timestamp">{{ message.timestamp | date:'short' }}</span>
+      </div>
+    </div>
+  </div>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-item lines="none">
+      <ion-input
+        [(ngModel)]="newMessage"
+        placeholder="Escribe un mensaje..."
+        (keyup.enter)="sendMessage()">
+      </ion-input>
+      <ion-button slot="end" (click)="sendMessage()" [disabled]="!newMessage.trim()">
+        <ion-icon name="send"></ion-icon>
+      </ion-button>
+    </ion-item>
+  </ion-toolbar>
+</ion-footer>

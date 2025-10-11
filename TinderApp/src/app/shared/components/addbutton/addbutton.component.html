@@ -1,0 +1,33 @@
+<ion-fab slot="fixed" vertical="bottom" horizontal="end">
+  <ion-fab-button>
+    <ion-icon name="chevron-up-circle"></ion-icon>
+  </ion-fab-button>
+  <ion-fab-list side="top">
+    <!-- Perfil -->
+    <ion-fab-button 
+      *ngIf="showProfile" 
+      (click)="handleProfile()"
+      color="secondary"
+      title="Mi Perfil">
+      <ion-icon name="person-outline"></ion-icon>
+    </ion-fab-button>
+
+    <!-- Matches -->
+    <ion-fab-button 
+      *ngIf="showAdd" 
+      (click)="handleAdd()"
+      color="success"
+      title="Mis Matches">
+      <ion-icon name="heart"></ion-icon>
+    </ion-fab-button>
+
+    <!-- Logout -->
+    <ion-fab-button 
+      *ngIf="showLogout" 
+      (click)="handleLogout()"
+      color="danger"
+      title="Cerrar sesión">
+      <ion-icon name="log-out-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab-list>
+</ion-fab>

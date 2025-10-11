@@ -1,0 +1,44 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Matches</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="loading-container">
+    <ion-spinner></ion-spinner>
+    <p>Cargando matches...</p>
+  </div>
+
+  <!-- No matches -->
+  <div *ngIf="!isLoading && matches.length === 0" class="no-matches">
+    <ion-icon name="heart-dislike-outline"></ion-icon>
+    <h2>No tienes matches aún</h2>
+    <p>Sigue dando likes para encontrar personas con intereses similares</p>
+    <ion-button routerLink="/home">
+      Descubrir Personas
+    </ion-button>
+  </div>
+
+  <!-- Lista de matches -->
+  <ion-list *ngIf="!isLoading && matches.length > 0">
+    <ion-item *ngFor="let match of matches" button (click)="openChat(match)">
+      <ion-avatar slot="start">
+        <img [src]="match.photo || 'assets/icon/default-avatar.png'" [alt]="match.name" />
+      </ion-avatar>
+      <ion-label>
+        <h2>{{ match.name }}</h2>
+        <p *ngIf="match.lastMessage">{{ match.lastMessage }}</p>
+        <p *ngIf="!match.lastMessage" class="no-messages">Iniciar conversación</p>
+      </ion-label>
+      <ion-badge *ngIf="match.unreadCount && match.unreadCount > 0" color="primary" slot="end">
+        {{ match.unreadCount }}
+      </ion-badge>
+      <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+    </ion-item>
+  </ion-list>
+</ion-content>

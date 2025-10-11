@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { User } from '../../../domain/model/user.model';
 import { Auth as AuthFire } from '@angular/fire/auth';
 import { Query } from '../../core/services/query/query';
+import { Router } from '@angular/router';
+import { Auth } from '../../core/providers/auth/auth';
 
 @Component({
   selector: 'app-home',
@@ -14,7 +16,9 @@ export class HomePage implements OnInit {
 
   constructor(
     private readonly authFire: AuthFire,
-    private readonly querySvc: Query
+    private readonly querySvc: Query,
+    private readonly router: Router,
+    private readonly authPrv: Auth
   ) {}
 
   ngOnInit(): void {
@@ -72,10 +76,73 @@ export class HomePage implements OnInit {
     }
   }
 
-  public onLike(uid: string){
+  public async onLike(uid: string){
     console.log('Like', uid);
+    const currentUid = this.authFire.currentUser?.uid;
+    
+    if (!currentUid) return;
+
+    try {
+      // Guardar el like en Firestore
+      await this.querySvc.add('likes', {
+        userId: currentUid,
+        matchedUserId: uid,
+        action: 'like',
+        timestamp: new Date()
+      });
+
+      // Verificar si hay match mutuo
+      const theirLikes = await this.querySvc.listByField('likes', 'userId', uid);
+      const isMatch = theirLikes.some((l: any) => l.matchedUserId === currentUid);
+
+      if (isMatch) {
+        alert('🎉 ¡Es un match! Ahora pueden chatear');
+        this.router.navigate(['/matches']);
+      } else {
+        // Remover usuario de las recomendaciones
+        this.recommendations = this.recommendations.filter(u => u.uid !== uid);
+      }
+    } catch (error) {
+      console.error('Error al guardar like:', error);
+    }
   }
-  public onPass(uid: string){
+  
+  public async onPass(uid: string){
     console.log('Pass', uid);
+    const currentUid = this.authFire.currentUser?.uid;
+    
+    if (!currentUid) return;
+
+    try {
+      // Guardar el pass en Firestore
+      await this.querySvc.add('likes', {
+        userId: currentUid,
+        matchedUserId: uid,
+        action: 'pass',
+        timestamp: new Date()
+      });
+
+      // Remover usuario de las recomendaciones
+      this.recommendations = this.recommendations.filter(u => u.uid !== uid);
+    } catch (error) {
+      console.error('Error al guardar pass:', error);
+    }
+  }
+
+  public goToProfile(){
+    this.router.navigate(['/profile']);
+  }
+
+  public goToMatches(){
+    this.router.navigate(['/matches']);
+  }
+
+  public async logout(){
+    try {
+      await this.authPrv.logout();
+      this.router.navigate(['/login']);
+    } catch (error) {
+      console.error('Error al cerrar sesión:', error);
+    }
   }
 }

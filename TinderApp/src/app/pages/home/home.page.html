@@ -26,4 +26,14 @@
       </app-match-card>
     </div>
   </div>
+
+  <!-- Botón flotante con acciones -->
+  <app-add-button
+    [showAdd]="true"
+    [showProfile]="true"
+    [showLogout]="true"
+    (onAdd)="goToMatches()"
+    (onProfile)="goToProfile()"
+    (onLogout)="logout()">
+  </app-add-button>
 </ion-content>

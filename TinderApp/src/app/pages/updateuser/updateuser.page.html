@@ -1,0 +1,78 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ fullName }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="logout()">
+        <ion-icon name="log-out-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="profile-container">
+    <!-- Avatar del usuario -->
+    <div class="profile-header">
+      <ion-avatar class="profile-avatar" (click)="changePhoto()">
+        <img [src]="userPhoto || 'assets/icon/default-avatar.png'" alt="Foto de perfil" />
+        <div class="avatar-overlay">
+          <ion-icon name="camera"></ion-icon>
+        </div>
+      </ion-avatar>
+    </div>
+
+    <!-- Spinner de carga -->
+    <ion-spinner *ngIf="isLoading" class="center-spinner"></ion-spinner>
+
+    <!-- Formulario de perfil -->
+    <form [formGroup]="profileForm" *ngIf="!isLoading">
+      <ion-item>
+        <ion-label position="floating">Nombre</ion-label>
+        <ion-input formControlName="name" type="text" placeholder="Nombre"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="floating">Apellido</ion-label>
+        <ion-input formControlName="lastName" type="text" placeholder="Apellido"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="floating">Email</ion-label>
+        <ion-input formControlName="email" type="email" placeholder="Email"></ion-input>
+      </ion-item>
+
+      <!-- Botones de acción -->
+      <div class="action-buttons">
+        <!-- Botón Editar (solo visible cuando no está editando) -->
+        <ion-button *ngIf="!isEditing" expand="block" (click)="toggleEdit()">
+          <ion-icon name="create-outline" slot="start"></ion-icon>
+          Editar Perfil
+        </ion-button>
+
+        <!-- Botones durante edición -->
+        <div *ngIf="isEditing" class="edit-buttons">
+          <!-- Botón Guardar -->
+          <ion-button expand="block" color="success" [disabled]="profileForm.invalid" (click)="updateProfile()">
+            <ion-icon name="save-outline" slot="start"></ion-icon>
+            Guardar Cambios
+          </ion-button>
+
+          <!-- Botón Cancelar -->
+          <ion-button expand="block" color="medium" fill="outline" (click)="toggleEdit()">
+            <ion-icon name="close-outline" slot="start"></ion-icon>
+            Cancelar
+          </ion-button>
+        </div>
+
+        <!-- Botón Cambiar Contraseña -->
+        <ion-button expand="block" color="warning" fill="outline" (click)="changePassword()">
+          <ion-icon name="key-outline" slot="start"></ion-icon>
+          Cambiar Contraseña
+        </ion-button>
+      </div>
+    </form>
+  </div>
+</ion-content>
